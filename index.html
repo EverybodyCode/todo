@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Todo Flow</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">GitHub Pages • Offline-friendly</p>
+          <h1>Todo Flow</h1>
+          <p class="subtitle">
+            Capture tasks, track momentum, and keep everything cached locally in your browser.
+          </p>
+        </div>
+        <div class="stats" aria-live="polite">
+          <div>
+            <span id="total-count">0</span>
+            <small>Total</small>
+          </div>
+          <div>
+            <span id="open-count">0</span>
+            <small>Open</small>
+          </div>
+          <div>
+            <span id="done-count">0</span>
+            <small>Done</small>
+          </div>
+        </div>
+      </header>
+
+      <section class="composer" aria-label="Add a new task">
+        <div class="input-group">
+          <label class="sr-only" for="todo-title">Task</label>
+          <input
+            id="todo-title"
+            type="text"
+            placeholder="What needs your focus today?"
+            autocomplete="off"
+          />
+        </div>
+        <div class="input-group">
+          <label class="sr-only" for="todo-notes">Notes</label>
+          <input id="todo-notes" type="text" placeholder="Add extra details (optional)" />
+        </div>
+        <button id="add-btn" class="primary" type="button">Add task</button>
+      </section>
+
+      <section class="controls" aria-label="Task controls">
+        <div class="filters" role="tablist">
+          <button class="filter active" data-filter="all" type="button">All</button>
+          <button class="filter" data-filter="open" type="button">Open</button>
+          <button class="filter" data-filter="done" type="button">Done</button>
+        </div>
+        <div class="actions">
+          <button id="export-btn" type="button">Export</button>
+          <label class="file-btn" for="import-file">Import</label>
+          <input id="import-file" type="file" accept="application/json" />
+          <button id="clear-btn" type="button" class="danger">Clear completed</button>
+        </div>
+      </section>
+
+      <section class="list" aria-live="polite" aria-label="Todo list">
+        <ul id="todo-list"></ul>
+        <div class="empty" id="empty-state" hidden>
+          <p>Nothing here yet. Add your first task to get started.</p>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>
+          Stored in your browser cache using localStorage. Export a backup anytime to move between
+          devices.
+        </p>
+      </footer>
+    </main>
+
+    <template id="todo-item-template">
+      <li class="todo-item">
+        <div class="checkbox">
+          <input type="checkbox" />
+        </div>
+        <div class="content">
+          <h3></h3>
+          <p></p>
+          <span class="meta"></span>
+        </div>
+        <button class="icon-btn" aria-label="Delete task" title="Delete">
+          ✕
+        </button>
+      </li>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
