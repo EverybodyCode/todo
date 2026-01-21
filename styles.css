@@ -24,6 +24,42 @@ body {
   min-height: 100vh;
 }
 
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -10px;
+  left: var(--confetti-left);
+  width: var(--confetti-size);
+  height: calc(var(--confetti-size) * 0.4);
+  background: var(--confetti-color);
+  border-radius: 999px;
+  opacity: 0;
+  animation: confetti-fall var(--confetti-duration) ease-out var(--confetti-delay)
+    forwards;
+  transform: rotate(0deg);
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(0) rotate(0deg);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(110vh) rotate(720deg);
+  }
+}
+
 .page {
   max-width: 1100px;
   margin: 0 auto;

@@ -13,6 +13,33 @@ const filterButtons = Array.from(document.querySelectorAll(".filters button"));
 let todos = [];
 let activeFilter = "all";
 
+const triggerConfetti = () => {
+  const confetti = document.createElement("div");
+  confetti.className = "confetti-container";
+  const colors = ["#5b4bff", "#ffb347", "#ff7ad9", "#39d98a", "#7c4dff"];
+  const pieceCount = 24;
+
+  for (let i = 0; i < pieceCount; i += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    const size = Math.floor(Math.random() * 8) + 6;
+    piece.style.setProperty("--confetti-color", colors[i % colors.length]);
+    piece.style.setProperty("--confetti-size", `${size}px`);
+    piece.style.setProperty("--confetti-left", `${Math.random() * 100}%`);
+    piece.style.setProperty("--confetti-delay", `${Math.random() * 0.3}s`);
+    piece.style.setProperty(
+      "--confetti-duration",
+      `${1 + Math.random() * 0.6}s`
+    );
+    confetti.appendChild(piece);
+  }
+
+  document.body.appendChild(confetti);
+  window.setTimeout(() => {
+    confetti.remove();
+  }, 1800);
+};
+
 const generateId = () => {
   if (window.crypto?.randomUUID) {
     return window.crypto.randomUUID();
@@ -137,11 +164,16 @@ const addTodo = (text) => {
 };
 
 const toggleTodo = (id) => {
+  const target = todos.find((todo) => todo.id === id);
+  const wasCompleted = target?.completed;
   todos = todos.map((todo) =>
     todo.id === id ? { ...todo, completed: !todo.completed } : todo
   );
   persistTodos();
   renderTodos();
+  if (target && !wasCompleted) {
+    triggerConfetti();
+  }
 };
 
 const removeTodo = (id) => {
