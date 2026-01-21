@@ -9,6 +9,7 @@ const clearCompletedButton = document.querySelector("#clear-completed");
 const exportButton = document.querySelector("#export-data");
 const importInput = document.querySelector("#import-file");
 const filterButtons = Array.from(document.querySelectorAll(".filters button"));
+const confettiHost = document.querySelector("#confetti");
 
 let todos = [];
 let activeFilter = "all";
@@ -137,11 +138,22 @@ const addTodo = (text) => {
 };
 
 const toggleTodo = (id) => {
-  todos = todos.map((todo) =>
-    todo.id === id ? { ...todo, completed: !todo.completed } : todo
-  );
+  let shouldCelebrate = false;
+  todos = todos.map((todo) => {
+    if (todo.id !== id) {
+      return todo;
+    }
+    const nextCompleted = !todo.completed;
+    if (nextCompleted && !todo.completed) {
+      shouldCelebrate = true;
+    }
+    return { ...todo, completed: nextCompleted };
+  });
   persistTodos();
   renderTodos();
+  if (shouldCelebrate) {
+    launchConfetti();
+  }
 };
 
 const removeTodo = (id) => {
@@ -212,6 +224,38 @@ const importTodos = async (file) => {
     alert("Unable to import that file. Please use a valid export.");
   } finally {
     importInput.value = "";
+  }
+};
+
+const launchConfetti = () => {
+  if (!confettiHost) return;
+  const colors = ["#5b4bff", "#ffb347", "#6bd4ff", "#ff6b9a", "#9f7aea"];
+  const pieceCount = 36;
+
+  for (let i = 0; i < pieceCount; i += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    const left = Math.random() * 100;
+    const size = 6 + Math.random() * 6;
+    const duration = 800 + Math.random() * 600;
+    const delay = Math.random() * 150;
+    const rotation = Math.random() * 360;
+    const drift = (Math.random() * 2 - 1) * 120;
+
+    piece.style.left = `${left}vw`;
+    piece.style.width = `${size}px`;
+    piece.style.height = `${size * 0.6}px`;
+    piece.style.background = colors[i % colors.length];
+    piece.style.animationDuration = `${duration}ms`;
+    piece.style.animationDelay = `${delay}ms`;
+    piece.style.setProperty("--confetti-rotate", `${rotation}deg`);
+    piece.style.setProperty("--confetti-drift", `${drift}px`);
+
+    piece.addEventListener("animationend", () => {
+      piece.remove();
+    });
+
+    confettiHost.appendChild(piece);
   }
 };
 
