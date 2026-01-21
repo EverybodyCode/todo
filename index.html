@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Todo Bloom</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Todo Bloom</p>
+          <h1>Plan your day with clarity.</h1>
+          <p class="subtitle">
+            A calm, single-page to-do workspace that lives entirely in your browser.
+            Everything is cached locally, so your list is available offline and instantly.
+          </p>
+        </div>
+        <div class="hero-card">
+          <div class="hero-stat">
+            <span id="task-count">0</span>
+            <p>tasks tracked</p>
+          </div>
+          <div class="hero-stat">
+            <span id="completed-count">0</span>
+            <p>completed</p>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="composer">
+          <form id="todo-form">
+            <label for="todo-input">Add a new task</label>
+            <div class="input-row">
+              <input
+                id="todo-input"
+                type="text"
+                name="todo"
+                placeholder="Finish the project brief"
+                autocomplete="off"
+                required
+              />
+              <button type="submit">Add</button>
+            </div>
+          </form>
+          <div class="actions">
+            <button id="clear-completed" class="ghost">Clear completed</button>
+            <button id="export-data" class="ghost">Export</button>
+            <label class="ghost file-label">
+              Import
+              <input id="import-file" type="file" accept="application/json" />
+            </label>
+          </div>
+          <p class="hint">Export saves a JSON snapshot to disk. Import merges tasks safely.</p>
+        </section>
+
+        <section class="list-section">
+          <div class="list-header">
+            <h2>Today</h2>
+            <div class="filters" role="group" aria-label="Filter tasks">
+              <button data-filter="all" class="active">All</button>
+              <button data-filter="active">Active</button>
+              <button data-filter="completed">Completed</button>
+            </div>
+          </div>
+          <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
+        </section>
+      </main>
+
+      <footer>
+        <p>Built for focus. Stored locally using browser cache (localStorage).</p>
+      </footer>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
