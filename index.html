@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo Bloom</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app__header">
+        <div>
+          <p class="eyebrow">Todo Bloom</p>
+          <h1>Plan today with clarity.</h1>
+          <p class="subtitle">
+            A beautiful, offline-first to-do list saved in your browser cache.
+          </p>
+        </div>
+        <div class="status">
+          <span class="status__dot" aria-hidden="true"></span>
+          <span id="statusText">All changes saved locally</span>
+        </div>
+      </header>
+
+      <main class="card">
+        <section class="composer">
+          <div class="composer__input">
+            <label for="taskInput">New task</label>
+            <div class="input-group">
+              <input
+                id="taskInput"
+                type="text"
+                placeholder="Add a task that moves you forward"
+                autocomplete="off"
+              />
+              <button id="addBtn" class="btn btn--primary">Add</button>
+            </div>
+            <small id="inputHelper">Press Enter to add quickly.</small>
+          </div>
+          <div class="composer__actions">
+            <button id="exportBtn" class="btn btn--ghost">
+              Export list
+            </button>
+            <label class="btn btn--ghost btn--file" for="importInput">
+              Import list
+            </label>
+            <input
+              id="importInput"
+              type="file"
+              accept="application/json"
+              hidden
+            />
+          </div>
+        </section>
+
+        <section class="summary">
+          <div>
+            <h2 id="taskCount">0 tasks</h2>
+            <p id="taskMeta">Start by adding your first task.</p>
+          </div>
+          <button id="clearCompletedBtn" class="btn btn--secondary" disabled>
+            Clear completed
+          </button>
+        </section>
+
+        <section>
+          <ul id="taskList" class="task-list" aria-live="polite"></ul>
+        </section>
+      </main>
+
+      <footer class="app__footer">
+        <p>
+          Stored safely in your browser cache. Export a JSON backup anytime for
+          safekeeping.
+        </p>
+      </footer>
+    </div>
+
+    <template id="taskTemplate">
+      <li class="task">
+        <label class="task__content">
+          <input class="task__toggle" type="checkbox" />
+          <span class="task__text"></span>
+        </label>
+        <div class="task__actions">
+          <button class="icon-button" data-action="edit" title="Edit task">
+            ✏️
+          </button>
+          <button class="icon-button" data-action="delete" title="Delete task">
+            🗑️
+          </button>
+        </div>
+      </li>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
