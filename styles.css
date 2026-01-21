@@ -302,6 +302,38 @@ footer {
   font-size: 0.9rem;
 }
 
+.confetti-burst {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 999;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 14px;
+  border-radius: 4px;
+  opacity: 0;
+  animation: confetti-burst var(--duration, 1.1s) ease-out forwards;
+}
+
+@keyframes confetti-burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(var(--x), var(--y)) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x-end), var(--fall)) rotate(360deg);
+  }
+}
+
 @media (max-width: 720px) {
   .hero {
     flex-direction: column;

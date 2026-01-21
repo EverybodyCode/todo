@@ -62,6 +62,64 @@ const updateCounts = () => {
   completedCount.textContent = completed;
 };
 
+const launchConfetti = (originElement) => {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+  const container = document.createElement("div");
+  container.className = "confetti-burst";
+
+  const originRect = originElement?.getBoundingClientRect();
+  const startX = originRect
+    ? originRect.left + originRect.width / 2
+    : window.innerWidth / 2;
+  const startY = originRect
+    ? originRect.top + originRect.height / 2
+    : window.innerHeight / 2;
+
+  const colors = [
+    "#5b4bff",
+    "#ffb347",
+    "#7bd389",
+    "#ff6f91",
+    "#8bd3dd",
+    "#ffd166",
+  ];
+
+  const pieceCount = 28;
+  let maxDuration = 0;
+
+  for (let i = 0; i < pieceCount; i += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+
+    const x = (Math.random() * 2 - 1) * 140;
+    const y = -Math.random() * 140 - 60;
+    const xEnd = x + (Math.random() * 2 - 1) * 40;
+    const fall = Math.random() * 120 + 180;
+    const duration = Math.random() * 0.4 + 0.9;
+    maxDuration = Math.max(maxDuration, duration);
+
+    piece.style.left = `${startX}px`;
+    piece.style.top = `${startY}px`;
+    piece.style.backgroundColor = colors[i % colors.length];
+    piece.style.setProperty("--x", `${x}px`);
+    piece.style.setProperty("--y", `${y}px`);
+    piece.style.setProperty("--x-end", `${xEnd}px`);
+    piece.style.setProperty("--fall", `${fall}px`);
+    piece.style.setProperty("--duration", `${duration}s`);
+
+    container.appendChild(piece);
+  }
+
+  document.body.appendChild(container);
+
+  window.setTimeout(() => {
+    container.remove();
+  }, (maxDuration + 0.2) * 1000);
+};
+
 const applyFilter = (items) => {
   if (activeFilter === "active") {
     return items.filter((todo) => !todo.completed);
@@ -111,7 +169,7 @@ const renderTodos = () => {
     `;
 
     const checkbox = item.querySelector("input[type=checkbox]");
-    checkbox.addEventListener("change", () => toggleTodo(todo.id));
+    checkbox.addEventListener("change", () => toggleTodo(todo.id, checkbox));
 
     const deleteButton = item.querySelector("button[data-action=delete]");
     deleteButton.addEventListener("click", () => removeTodo(todo.id));
@@ -136,10 +194,15 @@ const addTodo = (text) => {
   renderTodos();
 };
 
-const toggleTodo = (id) => {
+const toggleTodo = (id, originElement) => {
+  const targetTodo = todos.find((todo) => todo.id === id);
+  const wasCompleted = targetTodo?.completed;
   todos = todos.map((todo) =>
     todo.id === id ? { ...todo, completed: !todo.completed } : todo
   );
+  if (targetTodo && !wasCompleted) {
+    launchConfetti(originElement);
+  }
   persistTodos();
   renderTodos();
 };
