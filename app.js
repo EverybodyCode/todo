@@ -9,6 +9,7 @@ const clearCompletedButton = document.querySelector("#clear-completed");
 const exportButton = document.querySelector("#export-data");
 const importInput = document.querySelector("#import-file");
 const filterButtons = Array.from(document.querySelectorAll(".filters button"));
+const confettiContainer = document.querySelector("#confetti-container");
 
 let todos = [];
 let activeFilter = "all";
@@ -60,6 +61,35 @@ const updateCounts = () => {
   const completed = todos.filter((todo) => todo.completed).length;
   taskCount.textContent = total;
   completedCount.textContent = completed;
+};
+
+const launchConfetti = () => {
+  if (!confettiContainer) return;
+
+  const colors = ["#5b4bff", "#ffb347", "#ff7a59", "#9b5cff", "#4dd6c0"];
+  const pieces = 28;
+
+  for (let i = 0; i < pieces; i += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    piece.style.left = `${Math.random() * 100}vw`;
+    piece.style.setProperty("--color", colors[Math.floor(Math.random() * colors.length)]);
+    piece.style.setProperty("--size", `${6 + Math.random() * 8}px`);
+    piece.style.setProperty("--drift", `${(Math.random() - 0.5) * 120}px`);
+    piece.style.setProperty("--fall", `${240 + Math.random() * 160}px`);
+    piece.style.setProperty("--duration", `${900 + Math.random() * 500}ms`);
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+    piece.addEventListener(
+      "animationend",
+      () => {
+        piece.remove();
+      },
+      { once: true }
+    );
+
+    confettiContainer.appendChild(piece);
+  }
 };
 
 const applyFilter = (items) => {
@@ -137,11 +167,20 @@ const addTodo = (text) => {
 };
 
 const toggleTodo = (id) => {
-  todos = todos.map((todo) =>
-    todo.id === id ? { ...todo, completed: !todo.completed } : todo
-  );
+  let shouldCelebrate = false;
+  todos = todos.map((todo) => {
+    if (todo.id !== id) return todo;
+    const updated = { ...todo, completed: !todo.completed };
+    if (updated.completed && !todo.completed) {
+      shouldCelebrate = true;
+    }
+    return updated;
+  });
   persistTodos();
   renderTodos();
+  if (shouldCelebrate) {
+    launchConfetti();
+  }
 };
 
 const removeTodo = (id) => {
