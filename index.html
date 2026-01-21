@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Todo Bloom</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Todo Bloom</p>
+          <h1>Plan with clarity and finish with calm.</h1>
+          <p class="subhead">
+            Create, organize, and archive tasks in a beautifully simple workspace. Your
+            list stays in your browser cache, with optional export and import.
+          </p>
+        </div>
+        <div class="hero-card">
+          <div class="hero-stats">
+            <div>
+              <span id="task-count" class="stat">0</span>
+              <span class="label">Total tasks</span>
+            </div>
+            <div>
+              <span id="complete-count" class="stat">0</span>
+              <span class="label">Completed</span>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <button id="export-btn" class="button outline">Export</button>
+            <label class="button subtle" for="import-input">Import</label>
+            <input id="import-input" type="file" accept="application/json" />
+          </div>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="composer">
+          <form id="todo-form">
+            <label class="field">
+              <span>Task</span>
+              <input id="task-input" type="text" placeholder="Add a new priority..." required />
+            </label>
+            <label class="field">
+              <span>Tag</span>
+              <input id="tag-input" type="text" placeholder="Personal, Work, Focus" />
+            </label>
+            <label class="field">
+              <span>Due</span>
+              <input id="date-input" type="date" />
+            </label>
+            <button class="button primary" type="submit">Add task</button>
+          </form>
+        </section>
+
+        <section class="list-panel">
+          <div class="list-header">
+            <h2>Today&apos;s focus</h2>
+            <div class="filters">
+              <button class="chip is-active" data-filter="all">All</button>
+              <button class="chip" data-filter="active">Active</button>
+              <button class="chip" data-filter="complete">Completed</button>
+            </div>
+          </div>
+          <ul id="todo-list" class="todo-list"></ul>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>Stored locally in your browser. Export anytime for safe keeping.</p>
+      </footer>
+    </div>
+
+    <template id="todo-template">
+      <li class="todo-card">
+        <button class="checkbox" aria-label="Mark task as complete"></button>
+        <div class="todo-content">
+          <h3></h3>
+          <p class="meta"></p>
+        </div>
+        <div class="todo-actions">
+          <button class="icon-button" data-action="edit">Edit</button>
+          <button class="icon-button danger" data-action="delete">Delete</button>
+        </div>
+      </li>
+    </template>
+
+    <dialog id="edit-dialog">
+      <form method="dialog" class="dialog">
+        <header>
+          <h2>Edit task</h2>
+          <p>Update details, then save to keep it in sync.</p>
+        </header>
+        <label class="field">
+          <span>Task</span>
+          <input id="edit-title" type="text" required />
+        </label>
+        <label class="field">
+          <span>Tag</span>
+          <input id="edit-tag" type="text" />
+        </label>
+        <label class="field">
+          <span>Due</span>
+          <input id="edit-date" type="date" />
+        </label>
+        <div class="dialog-actions">
+          <button class="button subtle" value="cancel">Cancel</button>
+          <button class="button primary" id="save-edit" value="default">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
