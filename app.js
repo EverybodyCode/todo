@@ -1,4 +1,5 @@
 const STORAGE_KEY = "todo-bloom-items";
+const THEME_KEY = "todo-bloom-theme";
 
 const form = document.querySelector("#todo-form");
 const input = document.querySelector("#todo-input");
@@ -9,9 +10,33 @@ const clearCompletedButton = document.querySelector("#clear-completed");
 const exportButton = document.querySelector("#export-data");
 const importInput = document.querySelector("#import-file");
 const filterButtons = Array.from(document.querySelectorAll(".filters button"));
+const themeToggleButton = document.querySelector("#theme-toggle");
 
 let todos = [];
 let activeFilter = "all";
+
+const getPreferredTheme = () => {
+  const stored = localStorage.getItem(THEME_KEY);
+  if (stored) {
+    return stored;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
+const applyTheme = (theme) => {
+  document.documentElement.dataset.theme = theme;
+  if (!themeToggleButton) return;
+  const label = themeToggleButton.querySelector(".toggle-label");
+  if (label) {
+    label.textContent = theme === "dark" ? "Light mode" : "Dark mode";
+  }
+  themeToggleButton.setAttribute("aria-pressed", theme === "dark");
+};
+
+const setTheme = (theme) => {
+  localStorage.setItem(THEME_KEY, theme);
+  applyTheme(theme);
+};
 
 const generateId = () => {
   if (window.crypto?.randomUUID) {
@@ -300,5 +325,14 @@ filterButtons.forEach((button) => {
   });
 });
 
+if (themeToggleButton) {
+  themeToggleButton.addEventListener("click", () => {
+    const nextTheme =
+      document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+  });
+}
+
+applyTheme(getPreferredTheme());
 loadTodos();
 renderTodos();

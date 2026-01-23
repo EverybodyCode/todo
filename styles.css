@@ -1,15 +1,50 @@
 :root {
   color-scheme: light;
   --bg: #f6f5ff;
+  --bg-top: #ffffff;
+  --bg-mid: #f0efff;
   --card: #ffffff;
+  --card-alt: #fef6ff;
   --text: #1b1b24;
   --muted: #63637c;
   --primary: #5b4bff;
   --primary-dark: #4535e3;
   --accent: #ffb347;
   --border: #e3e2f5;
+  --chip: #f7f7ff;
+  --todo-bg: #fdfdff;
+  --todo-completed: #f2f2ff;
+  --ghost-bg: #f4f4ff;
+  --ghost-bg-hover: #e9e8ff;
+  --danger: #e04f5f;
+  --danger-bg: #fff0f0;
+  --danger-bg-hover: #ffe1e6;
   --shadow: 0 20px 60px rgba(50, 46, 95, 0.12);
   --radius: 20px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e111a;
+  --bg-top: #151827;
+  --bg-mid: #111524;
+  --card: #191d2e;
+  --card-alt: #20253a;
+  --text: #f5f6ff;
+  --muted: #a4a8c4;
+  --primary: #8f84ff;
+  --primary-dark: #6c60f7;
+  --accent: #ffc56a;
+  --border: #2c314b;
+  --chip: #20253a;
+  --todo-bg: #1a1f32;
+  --todo-completed: #212841;
+  --ghost-bg: #232840;
+  --ghost-bg-hover: #2b3150;
+  --danger: #ff9aa5;
+  --danger-bg: #352231;
+  --danger-bg-hover: #432739;
+  --shadow: 0 20px 50px rgba(10, 12, 24, 0.6);
 }
 
 * {
@@ -19,7 +54,7 @@
 body {
   margin: 0;
   font-family: "Manrope", system-ui, -apple-system, sans-serif;
-  background: radial-gradient(circle at top, #ffffff 0%, #f0efff 50%, var(--bg) 100%);
+  background: radial-gradient(circle at top, var(--bg-top) 0%, var(--bg-mid) 50%, var(--bg) 100%);
   color: var(--text);
   min-height: 100vh;
 }
@@ -75,7 +110,7 @@ body {
 }
 
 .hero-stat {
-  background: linear-gradient(135deg, #fef6ff, #f2f0ff);
+  background: linear-gradient(135deg, var(--card-alt), var(--card));
   padding: 16px;
   border-radius: 14px;
   border: 1px solid var(--border);
@@ -162,14 +197,14 @@ button:hover {
 
 button.ghost,
 .file-label {
-  background: #f4f4ff;
+  background: var(--ghost-bg);
   color: var(--primary-dark);
   box-shadow: none;
 }
 
 button.ghost:hover,
 .file-label:hover {
-  background: #e9e8ff;
+  background: var(--ghost-bg-hover);
 }
 
 .file-label {
@@ -211,7 +246,7 @@ button.ghost:hover,
 .filters {
   display: flex;
   gap: 8px;
-  background: #f7f7ff;
+  background: var(--chip);
   padding: 6px;
   border-radius: 999px;
 }
@@ -243,13 +278,13 @@ button.ghost:hover,
   gap: 16px;
   padding: 16px;
   border-radius: 18px;
-  background: #fdfdff;
+  background: var(--todo-bg);
   border: 1px solid var(--border);
   box-shadow: 0 12px 24px rgba(34, 26, 90, 0.06);
 }
 
 .todo-item.completed {
-  background: #f2f2ff;
+  background: var(--todo-completed);
   color: var(--muted);
 }
 
@@ -287,13 +322,33 @@ button.ghost:hover,
   padding: 8px 12px;
   font-size: 0.8rem;
   border-radius: 10px;
-  background: #fff0f0;
-  color: #e04f5f;
+  background: var(--danger-bg);
+  color: var(--danger);
   box-shadow: none;
 }
 
 .todo-actions button:hover {
-  background: #ffe1e6;
+  background: var(--danger-bg-hover);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+}
+
+.theme-toggle .toggle-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, var(--accent), var(--primary));
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="dark"] .theme-toggle .toggle-icon {
+  background: radial-gradient(circle at 70% 30%, var(--accent), transparent 60%),
+    radial-gradient(circle at 30% 30%, #fefefe, var(--primary));
 }
 
 footer {
