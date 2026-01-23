@@ -1,4 +1,5 @@
 const STORAGE_KEY = "todo-bloom-items";
+const THEME_KEY = "todo-bloom-theme";
 
 const form = document.querySelector("#todo-form");
 const input = document.querySelector("#todo-input");
@@ -9,9 +10,11 @@ const clearCompletedButton = document.querySelector("#clear-completed");
 const exportButton = document.querySelector("#export-data");
 const importInput = document.querySelector("#import-file");
 const filterButtons = Array.from(document.querySelectorAll(".filters button"));
+const themeToggle = document.querySelector("#theme-toggle");
 
 let todos = [];
 let activeFilter = "all";
+let currentTheme = "light";
 
 const generateId = () => {
   if (window.crypto?.randomUUID) {
@@ -60,6 +63,31 @@ const updateCounts = () => {
   const completed = todos.filter((todo) => todo.completed).length;
   taskCount.textContent = total;
   completedCount.textContent = completed;
+};
+
+const applyTheme = (theme) => {
+  const nextTheme = theme === "dark" ? "dark" : "light";
+  document.documentElement.setAttribute("data-theme", nextTheme);
+  themeToggle?.setAttribute("aria-pressed", String(nextTheme === "dark"));
+  themeToggle.textContent = nextTheme === "dark" ? "Light mode" : "Dark mode";
+  currentTheme = nextTheme;
+};
+
+const loadThemePreference = () => {
+  const stored = localStorage.getItem(THEME_KEY);
+  if (stored) {
+    applyTheme(stored);
+    return;
+  }
+
+  const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+  applyTheme(prefersDark ? "dark" : "light");
+};
+
+const toggleTheme = () => {
+  const next = currentTheme === "dark" ? "light" : "dark";
+  applyTheme(next);
+  localStorage.setItem(THEME_KEY, next);
 };
 
 const launchConfetti = (originElement) => {
@@ -300,5 +328,8 @@ filterButtons.forEach((button) => {
   });
 });
 
+themeToggle?.addEventListener("click", toggleTheme);
+
 loadTodos();
+loadThemePreference();
 renderTodos();

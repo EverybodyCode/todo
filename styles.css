@@ -10,6 +10,41 @@
   --border: #e3e2f5;
   --shadow: 0 20px 60px rgba(50, 46, 95, 0.12);
   --radius: 20px;
+  --page-bg: radial-gradient(circle at top, #ffffff 0%, #f0efff 50%, var(--bg) 100%);
+  --hero-stat-bg: linear-gradient(135deg, #fef6ff, #f2f0ff);
+  --hero-stat-border: var(--border);
+  --ghost-bg: #f4f4ff;
+  --ghost-hover: #e9e8ff;
+  --filter-bg: #f7f7ff;
+  --todo-bg: #fdfdff;
+  --todo-completed-bg: #f2f2ff;
+  --todo-action-bg: #fff0f0;
+  --todo-action-hover: #ffe1e6;
+  --focus-ring: 0 0 0 3px rgba(91, 75, 255, 0.2);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #10101a;
+  --card: #1c1c2b;
+  --text: #f6f5ff;
+  --muted: #b1b0c7;
+  --primary: #8a7bff;
+  --primary-dark: #6d5bff;
+  --accent: #ffc47a;
+  --border: #2f2f46;
+  --shadow: 0 18px 50px rgba(6, 6, 12, 0.45);
+  --page-bg: radial-gradient(circle at top, #1b1b2d 0%, #131320 55%, #0d0d16 100%);
+  --hero-stat-bg: linear-gradient(135deg, #26263a, #1f2034);
+  --hero-stat-border: #333351;
+  --ghost-bg: #26263a;
+  --ghost-hover: #2f2f4a;
+  --filter-bg: #242438;
+  --todo-bg: #222237;
+  --todo-completed-bg: #27273d;
+  --todo-action-bg: rgba(255, 117, 140, 0.15);
+  --todo-action-hover: rgba(255, 117, 140, 0.28);
+  --focus-ring: 0 0 0 3px rgba(138, 123, 255, 0.35);
 }
 
 * {
@@ -19,7 +54,7 @@
 body {
   margin: 0;
   font-family: "Manrope", system-ui, -apple-system, sans-serif;
-  background: radial-gradient(circle at top, #ffffff 0%, #f0efff 50%, var(--bg) 100%);
+  background: var(--page-bg);
   color: var(--text);
   min-height: 100vh;
 }
@@ -41,13 +76,21 @@ body {
   justify-content: space-between;
 }
 
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 12px;
   font-weight: 700;
   color: var(--primary);
-  margin: 0 0 12px;
+  margin: 0;
 }
 
 .hero h1 {
@@ -75,10 +118,10 @@ body {
 }
 
 .hero-stat {
-  background: linear-gradient(135deg, #fef6ff, #f2f0ff);
+  background: var(--hero-stat-bg);
   padding: 16px;
   border-radius: 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--hero-stat-border);
 }
 
 .hero-stat span {
@@ -135,7 +178,7 @@ input[type="text"] {
 
 input[type="text"]:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(91, 75, 255, 0.2);
+  box-shadow: var(--focus-ring);
 }
 
 button,
@@ -162,14 +205,34 @@ button:hover {
 
 button.ghost,
 .file-label {
-  background: #f4f4ff;
+  background: var(--ghost-bg);
   color: var(--primary-dark);
   box-shadow: none;
 }
 
 button.ghost:hover,
 .file-label:hover {
-  background: #e9e8ff;
+  background: var(--ghost-hover);
+}
+
+.theme-toggle {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  box-shadow: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.theme-toggle:hover {
+  background: var(--ghost-bg);
+  transform: translateY(-1px);
+}
+
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .file-label {
@@ -211,7 +274,7 @@ button.ghost:hover,
 .filters {
   display: flex;
   gap: 8px;
-  background: #f7f7ff;
+  background: var(--filter-bg);
   padding: 6px;
   border-radius: 999px;
 }
@@ -243,13 +306,13 @@ button.ghost:hover,
   gap: 16px;
   padding: 16px;
   border-radius: 18px;
-  background: #fdfdff;
+  background: var(--todo-bg);
   border: 1px solid var(--border);
   box-shadow: 0 12px 24px rgba(34, 26, 90, 0.06);
 }
 
 .todo-item.completed {
-  background: #f2f2ff;
+  background: var(--todo-completed-bg);
   color: var(--muted);
 }
 
@@ -287,13 +350,13 @@ button.ghost:hover,
   padding: 8px 12px;
   font-size: 0.8rem;
   border-radius: 10px;
-  background: #fff0f0;
+  background: var(--todo-action-bg);
   color: #e04f5f;
   box-shadow: none;
 }
 
 .todo-actions button:hover {
-  background: #ffe1e6;
+  background: var(--todo-action-hover);
 }
 
 footer {
