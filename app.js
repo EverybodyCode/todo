@@ -1,4 +1,5 @@
 const STORAGE_KEY = "todo-bloom-items";
+const THEME_KEY = "todo-bloom-theme";
 
 const form = document.querySelector("#todo-form");
 const input = document.querySelector("#todo-input");
@@ -9,9 +10,33 @@ const clearCompletedButton = document.querySelector("#clear-completed");
 const exportButton = document.querySelector("#export-data");
 const importInput = document.querySelector("#import-file");
 const filterButtons = Array.from(document.querySelectorAll(".filters button"));
+const themeToggle = document.querySelector("#theme-toggle");
 
 let todos = [];
 let activeFilter = "all";
+let themePreferenceLocked = false;
+
+const getPreferredTheme = () => {
+  const stored = localStorage.getItem(THEME_KEY);
+  if (stored === "light" || stored === "dark") {
+    themePreferenceLocked = true;
+    return stored;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
+const applyTheme = (theme, { persist = true } = {}) => {
+  if (theme !== "light" && theme !== "dark") return;
+  document.body.dataset.theme = theme;
+  if (themeToggle) {
+    const isDark = theme === "dark";
+    themeToggle.textContent = isDark ? "Light mode" : "Dark mode";
+    themeToggle.setAttribute("aria-pressed", String(isDark));
+  }
+  if (persist) {
+    localStorage.setItem(THEME_KEY, theme);
+  }
+};
 
 const generateId = () => {
   if (window.crypto?.randomUUID) {
@@ -302,3 +327,21 @@ filterButtons.forEach((button) => {
 
 loadTodos();
 renderTodos();
+
+const initialTheme = getPreferredTheme();
+applyTheme(initialTheme, { persist: themePreferenceLocked });
+
+if (!themePreferenceLocked) {
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  mediaQuery.addEventListener("change", (event) => {
+    applyTheme(event.matches ? "dark" : "light", { persist: false });
+  });
+}
+
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    themePreferenceLocked = true;
+    const nextTheme = document.body.dataset.theme === "dark" ? "light" : "dark";
+    applyTheme(nextTheme, { persist: true });
+  });
+}

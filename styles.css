@@ -10,6 +10,45 @@
   --border: #e3e2f5;
   --shadow: 0 20px 60px rgba(50, 46, 95, 0.12);
   --radius: 20px;
+  --bg-gradient-start: #ffffff;
+  --bg-gradient-mid: #f0efff;
+  --bg-gradient-end: var(--bg);
+  --hero-stat-bg: linear-gradient(135deg, #fef6ff, #f2f0ff);
+  --hero-stat-border: var(--border);
+  --filters-bg: #f7f7ff;
+  --todo-bg: #fdfdff;
+  --todo-completed-bg: #f2f2ff;
+  --ghost-bg: #f4f4ff;
+  --ghost-hover: #e9e8ff;
+  --danger-bg: #fff0f0;
+  --danger-bg-hover: #ffe1e6;
+  --input-focus: rgba(91, 75, 255, 0.2);
+}
+
+body[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f1018;
+  --card: #181926;
+  --text: #f5f5ff;
+  --muted: #b7b7cc;
+  --primary: #8a7dff;
+  --primary-dark: #6f63ff;
+  --accent: #ffb347;
+  --border: #2b2d42;
+  --shadow: 0 20px 60px rgba(5, 7, 20, 0.55);
+  --bg-gradient-start: #1b1c2a;
+  --bg-gradient-mid: #121320;
+  --bg-gradient-end: #0b0c14;
+  --hero-stat-bg: linear-gradient(135deg, #222339, #2a2b45);
+  --hero-stat-border: #303251;
+  --filters-bg: #23243a;
+  --todo-bg: #1c1d30;
+  --todo-completed-bg: #23243a;
+  --ghost-bg: #23243a;
+  --ghost-hover: #2d2f48;
+  --danger-bg: #2a1b26;
+  --danger-bg-hover: #3b2332;
+  --input-focus: rgba(138, 125, 255, 0.35);
 }
 
 * {
@@ -19,7 +58,12 @@
 body {
   margin: 0;
   font-family: "Manrope", system-ui, -apple-system, sans-serif;
-  background: radial-gradient(circle at top, #ffffff 0%, #f0efff 50%, var(--bg) 100%);
+  background: radial-gradient(
+    circle at top,
+    var(--bg-gradient-start) 0%,
+    var(--bg-gradient-mid) 50%,
+    var(--bg-gradient-end) 100%
+  );
   color: var(--text);
   min-height: 100vh;
 }
@@ -75,10 +119,10 @@ body {
 }
 
 .hero-stat {
-  background: linear-gradient(135deg, #fef6ff, #f2f0ff);
+  background: var(--hero-stat-bg);
   padding: 16px;
   border-radius: 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--hero-stat-border);
 }
 
 .hero-stat span {
@@ -92,6 +136,17 @@ body {
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 main {
@@ -131,11 +186,13 @@ input[type="text"] {
   font-size: 1rem;
   outline: none;
   transition: border 0.2s ease, box-shadow 0.2s ease;
+  background: transparent;
+  color: inherit;
 }
 
 input[type="text"]:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(91, 75, 255, 0.2);
+  box-shadow: 0 0 0 3px var(--input-focus);
 }
 
 button,
@@ -162,14 +219,14 @@ button:hover {
 
 button.ghost,
 .file-label {
-  background: #f4f4ff;
+  background: var(--ghost-bg);
   color: var(--primary-dark);
   box-shadow: none;
 }
 
 button.ghost:hover,
 .file-label:hover {
-  background: #e9e8ff;
+  background: var(--ghost-hover);
 }
 
 .file-label {
@@ -211,7 +268,7 @@ button.ghost:hover,
 .filters {
   display: flex;
   gap: 8px;
-  background: #f7f7ff;
+  background: var(--filters-bg);
   padding: 6px;
   border-radius: 999px;
 }
@@ -243,13 +300,13 @@ button.ghost:hover,
   gap: 16px;
   padding: 16px;
   border-radius: 18px;
-  background: #fdfdff;
+  background: var(--todo-bg);
   border: 1px solid var(--border);
   box-shadow: 0 12px 24px rgba(34, 26, 90, 0.06);
 }
 
 .todo-item.completed {
-  background: #f2f2ff;
+  background: var(--todo-completed-bg);
   color: var(--muted);
 }
 
@@ -287,13 +344,13 @@ button.ghost:hover,
   padding: 8px 12px;
   font-size: 0.8rem;
   border-radius: 10px;
-  background: #fff0f0;
+  background: var(--danger-bg);
   color: #e04f5f;
   box-shadow: none;
 }
 
 .todo-actions button:hover {
-  background: #ffe1e6;
+  background: var(--danger-bg-hover);
 }
 
 footer {
