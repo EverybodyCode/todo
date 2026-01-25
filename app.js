@@ -15,6 +15,7 @@ const themeToggle = document.querySelector("#theme-toggle");
 let todos = [];
 let activeFilter = "all";
 let themePreferenceLocked = false;
+let editingId = null;
 
 const getPreferredTheme = () => {
   const stored = localStorage.getItem(THEME_KEY);
@@ -78,6 +79,14 @@ const formatDate = (isoString) => {
     hour: "2-digit",
     minute: "2-digit",
   });
+};
+
+const getMetaText = (todo) => {
+  const created = `Created ${formatDate(todo.createdAt)}`;
+  if (todo.updatedAt) {
+    return `${created} · Edited ${formatDate(todo.updatedAt)}`;
+  }
+  return created;
 };
 
 const updateCounts = () => {
@@ -158,6 +167,7 @@ const applyFilter = (items) => {
 const renderTodos = () => {
   list.innerHTML = "";
   const filtered = applyFilter(todos);
+  let inputToFocus = null;
 
   if (filtered.length === 0) {
     const empty = document.createElement("li");
@@ -174,35 +184,114 @@ const renderTodos = () => {
   }
 
   filtered.forEach((todo) => {
+    const isEditing = editingId === todo.id;
     const item = document.createElement("li");
     item.className = "todo-item";
     if (todo.completed) {
       item.classList.add("completed");
     }
+    if (isEditing) {
+      item.classList.add("editing");
+    }
 
-    item.innerHTML = `
-      <input type="checkbox" aria-label="Mark ${todo.text} as complete" ${
-        todo.completed ? "checked" : ""
-      } />
-      <div class="todo-content">
-        <p>${todo.text}</p>
-        <div class="todo-meta">Created ${formatDate(todo.createdAt)}</div>
-      </div>
-      <div class="todo-actions">
-        <button type="button" data-action="delete">Delete</button>
-      </div>
-    `;
-
-    const checkbox = item.querySelector("input[type=checkbox]");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = todo.completed;
+    checkbox.setAttribute("aria-label", `Mark ${todo.text} as complete`);
+    checkbox.disabled = isEditing;
     checkbox.addEventListener("change", () => toggleTodo(todo.id, checkbox));
 
-    const deleteButton = item.querySelector("button[data-action=delete]");
-    deleteButton.addEventListener("click", () => removeTodo(todo.id));
+    const content = document.createElement("div");
+    content.className = "todo-content";
 
+    if (isEditing) {
+      const editLabel = document.createElement("label");
+      editLabel.className = "sr-only";
+      editLabel.setAttribute("for", `edit-${todo.id}`);
+      editLabel.textContent = "Edit task";
+
+      const editInput = document.createElement("input");
+      editInput.type = "text";
+      editInput.className = "edit-input";
+      editInput.id = `edit-${todo.id}`;
+      editInput.value = todo.text;
+      editInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          saveEdit(todo.id, editInput);
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          cancelEditing();
+        }
+      });
+
+      const meta = document.createElement("div");
+      meta.className = "todo-meta";
+      meta.textContent = `Editing task created ${formatDate(todo.createdAt)}`;
+
+      content.appendChild(editLabel);
+      content.appendChild(editInput);
+      content.appendChild(meta);
+      inputToFocus = editInput;
+    } else {
+      const text = document.createElement("p");
+      text.textContent = todo.text;
+      const meta = document.createElement("div");
+      meta.className = "todo-meta";
+      meta.textContent = getMetaText(todo);
+      content.appendChild(text);
+      content.appendChild(meta);
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "todo-actions";
+
+    if (isEditing) {
+      const saveButton = document.createElement("button");
+      saveButton.type = "button";
+      saveButton.className = "primary";
+      saveButton.textContent = "Save";
+      saveButton.addEventListener("click", () => saveEdit(todo.id, editInput));
+
+      const cancelButton = document.createElement("button");
+      cancelButton.type = "button";
+      cancelButton.className = "ghost";
+      cancelButton.textContent = "Cancel";
+      cancelButton.addEventListener("click", () => cancelEditing());
+
+      actions.appendChild(saveButton);
+      actions.appendChild(cancelButton);
+    } else {
+      const editButton = document.createElement("button");
+      editButton.type = "button";
+      editButton.className = "secondary";
+      editButton.textContent = "Edit";
+      editButton.addEventListener("click", () => startEditing(todo.id));
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "danger";
+      deleteButton.textContent = "Delete";
+      deleteButton.addEventListener("click", () => removeTodo(todo.id));
+
+      actions.appendChild(editButton);
+      actions.appendChild(deleteButton);
+    }
+
+    item.appendChild(checkbox);
+    item.appendChild(content);
+    item.appendChild(actions);
     list.appendChild(item);
   });
 
   updateCounts();
+  if (inputToFocus) {
+    requestAnimationFrame(() => {
+      inputToFocus.focus();
+      inputToFocus.select();
+    });
+  }
 };
 
 const addTodo = (text) => {
@@ -215,6 +304,7 @@ const addTodo = (text) => {
     completed: false,
     createdAt: new Date().toISOString(),
   });
+  editingId = null;
   persistTodos();
   renderTodos();
 };
@@ -234,12 +324,45 @@ const toggleTodo = (id, originElement) => {
 
 const removeTodo = (id) => {
   todos = todos.filter((todo) => todo.id !== id);
+  if (editingId === id) {
+    editingId = null;
+  }
   persistTodos();
   renderTodos();
 };
 
 const clearCompleted = () => {
   todos = todos.filter((todo) => !todo.completed);
+  if (editingId && !todos.some((todo) => todo.id === editingId)) {
+    editingId = null;
+  }
+  persistTodos();
+  renderTodos();
+};
+
+const startEditing = (id) => {
+  editingId = id;
+  renderTodos();
+};
+
+const cancelEditing = () => {
+  editingId = null;
+  renderTodos();
+};
+
+const saveEdit = (id, inputElement) => {
+  const trimmed = inputElement?.value.trim() || "";
+  if (!trimmed) {
+    inputElement?.focus();
+    inputElement?.select();
+    return;
+  }
+  todos = todos.map((todo) =>
+    todo.id === id
+      ? { ...todo, text: trimmed, updatedAt: new Date().toISOString() }
+      : todo
+  );
+  editingId = null;
   persistTodos();
   renderTodos();
 };
@@ -280,6 +403,7 @@ const importTodos = async (file) => {
         text: item.text.trim(),
         completed: Boolean(item.completed),
         createdAt: item.createdAt || new Date().toISOString(),
+        updatedAt: item.updatedAt || null,
       }))
       .filter((item) => item.text.length > 0);
 
