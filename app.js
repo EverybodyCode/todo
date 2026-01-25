@@ -185,6 +185,7 @@ const renderTodos = () => {
 
   filtered.forEach((todo) => {
     const isEditing = editingId === todo.id;
+    let editInput = null;
     const item = document.createElement("li");
     item.className = "todo-item";
     if (todo.completed) {
@@ -210,7 +211,7 @@ const renderTodos = () => {
       editLabel.setAttribute("for", `edit-${todo.id}`);
       editLabel.textContent = "Edit task";
 
-      const editInput = document.createElement("input");
+      editInput = document.createElement("input");
       editInput.type = "text";
       editInput.className = "edit-input";
       editInput.id = `edit-${todo.id}`;
